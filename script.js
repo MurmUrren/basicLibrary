@@ -11,27 +11,34 @@ function Book(name, author, pages, read) {
 }
 
 function addBookToLibrary(name, author, pages, read) {
-    let book = new Book(name, author, pages);
-    book.push(myLibrary);
+    let book = new Book(name, author, pages, read);
+    myLibrary.push(book);
 }
 
-function viewLibrary(library) {
-    library.forEach(book => {
-        let bookCard = document.createElement('div');
-        bookCard.className = 'book-card';
+function displayBookOnLibrary(library) {
+    library.forEach((book, index) => {
+        if (!document.querySelector(`.book-card[data-index="${index}"]`)) {
+            let bookCard = document.createElement('div');
+            bookCard.setAttribute('data-index', index);
 
-        let bookName = document.createElement('h3');
-        bookName.textContent = book.name;
-        let bookAuthor = document.createElement('h4');
-        bookAuthor.textContent = book.author;
-        let bookPages = document.createElement('h5');
-        bookPages.textContent = `Pages: ${book.pages}`;
+            bookCard.className = 'book-card';
 
-        bookCard.appendChild(bookName);
-        bookCard.appendChild(bookAuthor);
-        bookCard.appendChild(bookPages);
+            let bookName = document.createElement('h3');
+            bookName.textContent = book.name;
+            let bookAuthor = document.createElement('h4');
+            bookAuthor.textContent = book.author;
+            let bookPages = document.createElement('h5');
+            bookPages.textContent = `Pages: ${book.pages}`;
+            let bookStatus = document.createElement('p');
+            bookStatus.textContent = `Status: ${book.read}`;
 
-        libraryDiv.appendChild(bookCard);
+            bookCard.appendChild(bookName);
+            bookCard.appendChild(bookAuthor);
+            bookCard.appendChild(bookPages);
+            bookCard.appendChild(bookStatus);
+
+            libraryDiv.appendChild(bookCard);
+        }
     });
 }
 
@@ -40,6 +47,29 @@ let libraryDiv = document.querySelector('.library-display');
 let newBookBtn = document.getElementById('new-book');
 let newBookPopup = document.querySelector('.new-book-form');
 let closePopupBtn = document.getElementById('close');
+
+let addBookBtn = document.getElementById('add-book');
+
+let bookForm = newBookPopup.querySelector('form');
+
+addBookBtn.addEventListener("click", () => {
+    const formData = new FormData(bookForm);
+    const bookData = {};
+
+    for(let [key, value] of formData.entries()) {
+        bookData[key] = value;
+    }
+
+    console.log(bookData);
+
+    addBookToLibrary(bookData.title, bookData.author, bookData.pages, bookData.status);
+    displayBookOnLibrary(myLibrary);
+    
+    bookForm.reset();
+    newBookPopup.close();
+})
+
+
 
 newBookBtn.addEventListener("click", () => {
     newBookPopup.showModal();
@@ -65,6 +95,6 @@ exampleBooks.forEach(book => {
 })
 
 
-viewLibrary(myLibrary);
+displayBookOnLibrary(myLibrary);
 
 
