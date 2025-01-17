@@ -43,10 +43,13 @@ function displayBookOnLibrary(library) {
     libraryDiv.innerHTML = '';
     library.forEach((book, index) => {
         if (!document.querySelector(`.book-card[data-index="${index}"]`)) {
+            
+            let bookInfo = document.createElement('div');
             let bookCard = document.createElement('div');
             bookCard.setAttribute('data-index', index);
 
             bookCard.className = 'book-card';
+            bookInfo.className = 'book-info';
 
             let bookName = document.createElement('h3');
             bookName.textContent = book.name;
@@ -72,10 +75,11 @@ function displayBookOnLibrary(library) {
                 console.log(`Updated book: ${book.name}, Read status: ${book.read}`);
             })
 
-            bookCard.appendChild(bookName);
-            bookCard.appendChild(bookAuthor);
-            bookCard.appendChild(bookPages);
-            bookCard.appendChild(bookStatus);
+            bookInfo.appendChild(bookName);
+            bookInfo.appendChild(bookAuthor);
+            bookInfo.appendChild(bookPages);
+            bookInfo.appendChild(bookStatus);
+            bookCard.appendChild(bookInfo)
             bookCard.appendChild(changeStatus);
 
             libraryDiv.appendChild(bookCard);
