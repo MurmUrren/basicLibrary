@@ -50,9 +50,9 @@ function displayBookOnLibrary(library) {
 
             let bookName = document.createElement('h3');
             bookName.textContent = book.name;
-            let bookAuthor = document.createElement('h4');
+            let bookAuthor = document.createElement('p');
             bookAuthor.textContent = book.author;
-            let bookPages = document.createElement('h5');
+            let bookPages = document.createElement('p');
             bookPages.textContent = `Pages: ${book.pages}`;
             let bookStatus = document.createElement('p');
             bookStatus.textContent = `Status: ${book.read}`;
@@ -128,7 +128,7 @@ let manageBookBtn = document.getElementById('manage-books-toggle');
 manageBookBtn.addEventListener("click", () => {
     let bookCards = document.querySelectorAll('.book-card');   
     bookCards.forEach(book => {
-        if (!book.querySelector('button')){
+        if (!book.querySelector('#removeBtn')){
             let removeBookBtn = document.createElement('button');
             removeBookBtn.textContent = "X";
             removeBookBtn.id = "removeBtn";
@@ -138,7 +138,7 @@ manageBookBtn.addEventListener("click", () => {
             })
             book.appendChild(removeBookBtn);
         } else {
-            let removeBookBtn = book.querySelector('button');
+            let removeBookBtn = book.querySelector('#removeBtn');
             book.removeChild(removeBookBtn);
         }
     })
