@@ -61,7 +61,7 @@ function displayBookOnLibrary(library) {
             bookStatus.textContent = `Status: ${book.read}`;
             let changeStatus = document.createElement('button');
             changeStatus.textContent = `Mark as In Progress`;
-            changeStatus.className = 'status-btn';
+            changeStatus.id = 'status-btn';
 
             changeStatus.addEventListener("click", () => {
                 if (book.read === "in progress") {
@@ -94,6 +94,11 @@ let closePopupBtn = document.getElementById('close');
 let addBookBtn = document.getElementById('add-book');
 
 addBookBtn.addEventListener("click", () => {
+    bookForm.classList.add('submitted');
+    if (!bookForm.checkValidity()) {
+        bookForm.reportValidity();
+        return;
+    } 
     const formData = new FormData(bookForm);
     const bookData = {};
 
@@ -107,6 +112,8 @@ addBookBtn.addEventListener("click", () => {
     displayBookOnLibrary(myLibrary);
     
     bookForm.reset();
+    newBookPopup.style.display = 'none';
+    bookForm.classList.remove('submitted');
     newBookPopup.close();
 })
 
@@ -115,6 +122,7 @@ let newBookPopup = document.querySelector('.new-book-form');
 let bookForm = newBookPopup.querySelector('form');
 
 newBookBtn.addEventListener("click", () => {
+    newBookPopup.style.display = 'flex';
     newBookPopup.showModal();
     let removeBtns = document.querySelectorAll('#removeBtn');
     removeBtns.forEach(btn => {
@@ -124,7 +132,19 @@ newBookBtn.addEventListener("click", () => {
 
 
 closePopupBtn.addEventListener("click", (e) => {
+    newBookPopup.style.display = 'none';
+    bookForm.classList.remove('submitted');
     newBookPopup.close();
+    bookForm.reset();
+})
+
+closePopupBtn.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") {
+        newBookPopup.style.display = 'none';
+        bookForm.classList.remove('submitted');
+        newBookPopup.close();
+        bookForm.reset();
+    }
 })
 
 let manageBookBtn = document.getElementById('manage-books-toggle');
