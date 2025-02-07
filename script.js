@@ -1,4 +1,60 @@
-let myLibrary = [];
+class Library {
+
+    constructor() {
+        this.bookList = []
+    }
+
+    addBookToLibrary(book) {
+        this.bookList.push(book);
+    }
+    
+    removeBookFromLibrary(index) {
+        console.log(`deleting ${this.bookList[index].name}`)
+        this.bookList.splice(index, 1);
+    }
+
+    createBook = () => {
+        bookForm.classList.add('submitted');
+        if (!bookForm.checkValidity()) {
+            bookForm.reportValidity();
+            return;
+        } 
+        const formData = new FormData(bookForm);
+        const bookData = {};
+    
+        for(let [key, value] of formData.entries()) {
+            bookData[key] = value;
+        }
+    
+        console.log(bookData);
+    
+        let book = new Book(bookData.title, bookData.author, bookData.pages, bookData.status);
+        this.addBookToLibrary(book)
+        displayBookOnLibrary(myLibrary);
+        
+        bookForm.reset();
+        newBookPopup.style.display = 'none';
+        bookForm.classList.remove('submitted');
+        newBookPopup.close();
+    }
+}
+
+class Book {
+    constructor(name, author, pages, read) {
+        this.name = name;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+    }
+
+    getInfo = () => {
+        return `${this.name} by ${this.author}, ${this.pages} pages, ${this.read ? 'read' : 'not read yet'}`;
+    };
+
+    setReadStatus = (status) => {
+            this.read = status;
+    } 
+}
 
 const exampleBooks = [
     new Book('The Great Gatsby', 'F. Scott Fitzgerald', 180),
@@ -11,33 +67,11 @@ const exampleBooks = [
     new Book('1984', 'George Orwell', 328)
   ];
 
+let myLibrary = new Library();
+
 exampleBooks.forEach(book => {
-    myLibrary.push(book);
+    myLibrary.addBookToLibrary(book);
 })
-
-function Book(name, author, pages, read) {
-    this.name = name;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
-    this.info = function() {
-        return `${this.name} by ${this.author}, ${this.pages} pages, ${this.read}`;
-    };
-}
-
-Book.prototype.setReadStatus = function(status) {
-    this.read = status;
-}
-
-function addBookToLibrary(name, author, pages, read) {
-    let book = new Book(name, author, pages, read);
-    myLibrary.push(book);
-}
-
-function removeBookFromLibrary(index) {
-    console.log(`deleting ${myLibrary[index].name}`)
-    myLibrary.splice(index, 1);
-}
 
 function displayBookOnLibrary(library) {
     libraryDiv.innerHTML = '';
@@ -93,29 +127,7 @@ let closePopupBtn = document.getElementById('close');
 
 let addBookBtn = document.getElementById('add-book');
 
-addBookBtn.addEventListener("click", () => {
-    bookForm.classList.add('submitted');
-    if (!bookForm.checkValidity()) {
-        bookForm.reportValidity();
-        return;
-    } 
-    const formData = new FormData(bookForm);
-    const bookData = {};
-
-    for(let [key, value] of formData.entries()) {
-        bookData[key] = value;
-    }
-
-    console.log(bookData);
-
-    addBookToLibrary(bookData.title, bookData.author, bookData.pages, bookData.status);
-    displayBookOnLibrary(myLibrary);
-    
-    bookForm.reset();
-    newBookPopup.style.display = 'none';
-    bookForm.classList.remove('submitted');
-    newBookPopup.close();
-})
+addBookBtn.addEventListener("click", library.addBook)
 
 let newBookBtn = document.getElementById('new-book');
 let newBookPopup = document.querySelector('.new-book-form');
