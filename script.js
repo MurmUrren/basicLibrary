@@ -1,3 +1,13 @@
+let libraryDiv = document.querySelector('.library-display');
+
+let closePopupBtn = document.getElementById('close');
+
+let addBookBtn = document.getElementById('add-book');
+
+let newBookBtn = document.getElementById('new-book');
+let newBookPopup = document.querySelector('.new-book-form');
+let bookForm = newBookPopup.querySelector('form');
+
 class Library {
 
     constructor() {
@@ -30,12 +40,60 @@ class Library {
     
         let book = new Book(bookData.title, bookData.author, bookData.pages, bookData.status);
         this.addBookToLibrary(book)
-        displayBookOnLibrary(myLibrary);
+        this.displayBooks();
         
         bookForm.reset();
         newBookPopup.style.display = 'none';
         bookForm.classList.remove('submitted');
         newBookPopup.close();
+    }
+
+    displayBooks() {
+        libraryDiv.innerHTML = '';
+        this.bookList.forEach((book, index) => {
+            if (!document.querySelector(`.book-card[data-index="${index}"]`)) {
+                
+                let bookInfo = document.createElement('div');
+                let bookCard = document.createElement('div');
+                bookCard.setAttribute('data-index', index);
+    
+                bookCard.className = 'book-card';
+                bookInfo.className = 'book-info';
+    
+                let bookName = document.createElement('h3');
+                bookName.textContent = book.name;
+                let bookAuthor = document.createElement('p');
+                bookAuthor.textContent = book.author;
+                let bookPages = document.createElement('p');
+                bookPages.textContent = `Pages: ${book.pages}`;
+                let bookStatus = document.createElement('p');
+                bookStatus.textContent = `Status: ${book.read}`;
+                let changeStatus = document.createElement('button');
+                changeStatus.textContent = `Mark as In Progress`;
+                changeStatus.id = 'status-btn';
+    
+                changeStatus.addEventListener("click", () => {
+                    if (book.read === "in progress") {
+                        book.setReadStatus('completed');
+                    } else if (book.read === 'completed') {
+                        book.setReadStatus('not read yet')
+                    } else {
+                        book.setReadStatus('in progress')
+                    }
+                    bookStatus.textContent = `Status: ${book.read}`;
+                    console.log(`Updated book: ${book.name}, Read status: ${book.read}`);
+                })
+    
+                bookInfo.appendChild(bookName);
+                bookInfo.appendChild(bookAuthor);
+                bookInfo.appendChild(bookPages);
+                bookInfo.appendChild(bookStatus);
+                bookCard.appendChild(bookInfo)
+                bookCard.appendChild(changeStatus);
+    
+                libraryDiv.appendChild(bookCard);
+            }
+        });
     }
 }
 
@@ -68,70 +126,12 @@ const exampleBooks = [
   ];
 
 let myLibrary = new Library();
+addBookBtn.addEventListener("click", myLibrary.createBook)
 
 exampleBooks.forEach(book => {
     myLibrary.addBookToLibrary(book);
 })
 
-function displayBookOnLibrary(library) {
-    libraryDiv.innerHTML = '';
-    library.forEach((book, index) => {
-        if (!document.querySelector(`.book-card[data-index="${index}"]`)) {
-            
-            let bookInfo = document.createElement('div');
-            let bookCard = document.createElement('div');
-            bookCard.setAttribute('data-index', index);
-
-            bookCard.className = 'book-card';
-            bookInfo.className = 'book-info';
-
-            let bookName = document.createElement('h3');
-            bookName.textContent = book.name;
-            let bookAuthor = document.createElement('p');
-            bookAuthor.textContent = book.author;
-            let bookPages = document.createElement('p');
-            bookPages.textContent = `Pages: ${book.pages}`;
-            let bookStatus = document.createElement('p');
-            bookStatus.textContent = `Status: ${book.read}`;
-            let changeStatus = document.createElement('button');
-            changeStatus.textContent = `Mark as In Progress`;
-            changeStatus.id = 'status-btn';
-
-            changeStatus.addEventListener("click", () => {
-                if (book.read === "in progress") {
-                    book.setReadStatus('completed');
-                } else if (book.read === 'completed') {
-                    book.setReadStatus('not read yet')
-                } else {
-                    book.setReadStatus('in progress')
-                }
-                bookStatus.textContent = `Status: ${book.read}`;
-                console.log(`Updated book: ${book.name}, Read status: ${book.read}`);
-            })
-
-            bookInfo.appendChild(bookName);
-            bookInfo.appendChild(bookAuthor);
-            bookInfo.appendChild(bookPages);
-            bookInfo.appendChild(bookStatus);
-            bookCard.appendChild(bookInfo)
-            bookCard.appendChild(changeStatus);
-
-            libraryDiv.appendChild(bookCard);
-        }
-    });
-}
-
-let libraryDiv = document.querySelector('.library-display');
-
-let closePopupBtn = document.getElementById('close');
-
-let addBookBtn = document.getElementById('add-book');
-
-addBookBtn.addEventListener("click", library.addBook)
-
-let newBookBtn = document.getElementById('new-book');
-let newBookPopup = document.querySelector('.new-book-form');
-let bookForm = newBookPopup.querySelector('form');
 
 newBookBtn.addEventListener("click", () => {
     newBookPopup.style.display = 'flex';
@@ -180,8 +180,7 @@ manageBookBtn.addEventListener("click", () => {
     })
 })
 
-displayBookOnLibrary(myLibrary);
-
+myLibrary.displayBooks();
 
 
 
